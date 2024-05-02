@@ -1,5 +1,9 @@
+//import { db } from "@vercel/postgres";
 import Image from "next/image";
+import { db } from "../server/db";
 
+
+export const dynamic = "force-dynamic";
 
 const mockUrl = [
   "https://utfs.io/f/05df0958-1d51-4ce6-909f-410b2c55e0bc-ksu0g0.jpg",
@@ -9,20 +13,23 @@ const mockUrl = [
 ];
 
 const mockImages = mockUrl.map((url, index) => ({
-  id: index+1,
+  id: index + 1,
   url
 }));
 
-export default function Home() {
+export default async function Home() {
+
+  const posts = await db.query.images.findMany();
+
   return (
     <main className="">
-     <div className="flex flex-wrap gap-4">
-      { mockImages.map((image) => (
-        <div key= {image.id} className="w-48">
-          <img src={image.url} alt="image" />
-        </div>
-      ))}
-     </div>
+      <div className="flex flex-wrap gap-4">
+        {mockImages.map((image) => (
+          <div key={image.id} className="w-48">
+            <img src={image.url} alt="image" />
+          </div>
+        ))}
+      </div>
     </main>
   );
 }
